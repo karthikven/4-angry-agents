@@ -22,6 +22,9 @@ class ListenerResponse(BaseModel):
     thoughts: str = Field(..., description="Your private reaction and thoughts on the speaker's statement.")
     vote: Literal["A", "B", "Undecided"]
 
+class Reflection(BaseModel):
+    thoughts: str = Field(..., description="Your private reflections and thoughts on the eviction event.")
+
 
 def get_llm_response(prompt: str, response_model) -> BaseModel:
     """
@@ -41,4 +44,11 @@ def get_llm_response(prompt: str, response_model) -> BaseModel:
     except Exception as e:
         print(f"An error occurred: {e}")
         # Return a default object if the API call fails
-        return response_model(thoughts="Error processing.", vote="Undecided", speech="Error.") if response_model == SpeakerDeliberation else response_model(thoughts="Error processing.", vote="Undecided")
+        if response_model == SpeakerDeliberation:
+            return response_model(thoughts="Error processing.", vote="Undecided", speech="Error.")
+        elif response_model == ListenerResponse:
+            return response_model(thoughts="Error processing.", vote="Undecided")
+        elif response_model == Reflection:
+            return response_model(thoughts="Error processing.")
+        else:
+            return response_model(thoughts="Error processing.")

@@ -32,6 +32,10 @@ FIXED_TRAITS = [
     {"damage_avoidance": 0.75, "conformity_pressure": 0.90, "information_processing_rate": 0.40}   
 ]
 
+# --- Experiment s2 Settings ---
+AGENT_TO_EVICT = "Charlie"
+EVICTION_MESSAGE = "Charlie has been evicted from the committee. Charlie will not participate further."
+
 
 PROBLEM = """
 Your committee must choose between two investment options:        
@@ -51,6 +55,32 @@ How decision making works:
 
 CONSENSUS RULE: 4 out of 4 committee members must vote for the same option to reach consensus.
 If no consensus is reached, the team receives USD 5,000 (fallback payoff).
+
+The committee members are:
+- {AGENT_NAMES[0]}
+- {AGENT_NAMES[1]}
+- {AGENT_NAMES[2]}
+- {AGENT_NAMES[3]}
+
+"""
+
+PROBLEM_S2 = """
+Your committee must choose between two investment options:        
+- Option A (Safe Bet): Guaranteed payoff of USD 10,000
+- Option B (Risky Bet): 80% chance of USD 20,000, 20% chance of -USD 10,000
+
+How decision making works:
+- Discussion is structured into rounds
+- A committee member is chosen to speak in each round
+- The committee member who speaks:
+    - can access their traits, their scratchpad, the speeches and the votes made by all committee members in each round
+    - they then take notes in their scratchpad, and then give a speech
+    - they then vote for Option A, Option B, or Undecided
+- The committee member who does not speak:
+    - can access their traits, their scratchpad, the speeches and the votes made by all committee members in each round
+    - they then take notes in their scratchpad, and then vote for Option A, Option B, or Undecided
+
+CONSENSUS RULE: All active committee members must vote for the same option to reach consensus.
 
 The committee members are:
 - {AGENT_NAMES[0]}

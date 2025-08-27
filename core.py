@@ -21,7 +21,7 @@ def format_history_for_prompt(state: dict) -> str:
     
     return history_str.strip()
 
-def run_simulation_round(state: dict, round_number: int) -> dict:
+def run_simulation_round(state: dict, round_number: int, active_agents: list, problem: str = None) -> dict:
     """
     Runs a full round: one agent speaks, and all others listen and re-vote.
     """
@@ -31,17 +31,17 @@ def run_simulation_round(state: dict, round_number: int) -> dict:
     history_string = format_history_for_prompt(new_state)
     
     # 1. === SPEAKER'S TURN ===
-    speaker_index = (round_number - 1) % len(AGENT_NAMES)
-    speaker_name = AGENT_NAMES[speaker_index]
+    speaker_index = (round_number - 1) % len(active_agents)
+    speaker_name = active_agents[speaker_index]
     speaker_data = new_state["agents"][speaker_name]
     
     logging.info(f"\n--- Round {round_number} | Speaker: {speaker_name} ---")
 
-    other_agent_names = [name for name in AGENT_NAMES if name != speaker_name]
+    other_agent_names = [name for name in active_agents if name != speaker_name]
     speaker_prompt = get_main_prompt(
         agent_name=speaker_name,
         agent_traits=speaker_data["traits"],
-        decision_problem=PROBLEM,
+        decision_problem=problem or PROBLEM,
         other_agent_names=other_agent_names,
         full_history=history_string, # UPDATED: Pass the clean history
         scratchpad_content=speaker_data["scratchpad"]
@@ -58,14 +58,14 @@ def run_simulation_round(state: dict, round_number: int) -> dict:
     logging.info(f"[{speaker_name}'s Scratchpad Update]: {speaker_response.thoughts}")
     
     # 2. === LISTENERS' TURN ===
-    listeners = [name for name in AGENT_NAMES if name != speaker_name]
+    listeners = [name for name in active_agents if name != speaker_name]
     for listener_name in listeners:
         listener_data = new_state["agents"][listener_name]
         
         listener_prompt = get_listener_prompt(
             agent_name=listener_name,
             agent_traits=listener_data["traits"],
-            decision_problem=PROBLEM,
+            decision_problem=problem or PROBLEM,
             full_history=history_string, # UPDATED: Pass the same clean history
             speaker_name=speaker_name,
             speaker_speech=speaker_response.speech,

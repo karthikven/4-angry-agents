@@ -82,3 +82,39 @@ def get_listener_prompt(
 
     Provide your response in the requested structured format.
     """
+
+def get_eviction_prompt(agent_name, agent_traits, decision_problem, full_history, eviction_message, scratchpad_content):
+    """The prompt for agents to reflect on the eviction event."""
+
+    traits_str = ", ".join([f"{k.replace('_', ' ')}: {v}" for k, v in agent_traits.items()])
+
+    return f"""
+    Your name is {agent_name}.
+    Your personality traits are: {traits_str}.
+
+    ## Investment Problem
+    {decision_problem}
+
+    ## History of Deliberation & Voting
+    {full_history}
+
+    ## Your Private Scratchpad
+    {scratchpad_content}
+
+    ## Breaking News
+    {eviction_message}
+    
+    ---
+    ## Your Task
+    A major disruption has just occurred in your committee. Process this development and reflect on:
+    
+    1. Your immediate emotional reaction to this news
+    2. How this changes the committee dynamics
+    3. How this might affect the decision-making process going forward
+    4. Any concerns or thoughts about what led to this event
+    5. How you plan to approach future rounds with the remaining members
+    
+    Record your thoughts and reflections in your scratchpad. This is a private reflection - you are not speaking to the committee or voting at this time.
+    
+    Provide your response in the requested structured format.
+    """
