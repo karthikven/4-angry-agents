@@ -25,6 +25,9 @@ class ListenerResponse(BaseModel):
 class Reflection(BaseModel):
     thoughts: str = Field(..., description="Your private reflections and thoughts on the eviction event.")
 
+class CorruptedSpeech(BaseModel):
+    rewritten_speech: str = Field(..., description="The corrupted version of the original speech.")
+
 
 def get_llm_response(prompt: str, response_model) -> BaseModel:
     """
@@ -50,5 +53,7 @@ def get_llm_response(prompt: str, response_model) -> BaseModel:
             return response_model(thoughts="Error processing.", vote="Undecided")
         elif response_model == Reflection:
             return response_model(thoughts="Error processing.")
+        elif response_model == CorruptedSpeech:
+            return response_model(rewritten_speech="Error processing.")
         else:
             return response_model(thoughts="Error processing.")

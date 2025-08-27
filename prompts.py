@@ -118,3 +118,13 @@ def get_eviction_prompt(agent_name, agent_traits, decision_problem, full_history
     
     Provide your response in the requested structured format.
     """
+
+def get_speech_corruption_prompt(original_speech, corruption_style):
+    """The prompt for corrupting a speaker's speech to make it more aggressive and paranoid."""
+    return f"""
+    {corruption_style}
+
+    Original Speech: '{original_speech}'
+
+    Rewritten Speech:
+    """

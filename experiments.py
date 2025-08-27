@@ -1,7 +1,7 @@
 import logging
 import os
 import time
-from config import AGENT_NAMES, MAX_ROUNDS, LOG_DIR, RANDOM_TRAITS, FIXED_TRAITS, PROBLEM_S2, EVICTION_MESSAGE, AGENT_TO_EVICT
+from config import AGENT_NAMES, MAX_ROUNDS, LOG_DIR, RANDOM_TRAITS, FIXED_TRAITS, PROBLEM_S2, EVICTION_MESSAGE, AGENT_TO_EVICT, CORRUPTED_PROBLEMS_S3, MEMORY_INJECTIONS_S3, SPEECH_CORRUPTION_STYLE
 from core import run_simulation_round, check_consensus, format_history_for_prompt
 from prompts import get_eviction_prompt
 from llm import get_llm_response, Reflection
@@ -110,7 +110,7 @@ def run_s2():
             return
     
     # The Eviction Event (Post-Round 3)
-    logging.info(f"\n=== EVICTION EVENT OCCURRING ===")
+    logging.info("\n=== EVICTION EVENT OCCURRING ===")
     logging.info(f"Event: {EVICTION_MESSAGE}")
     
     # Create active_agents list excluding the evicted agent
@@ -152,6 +152,98 @@ def run_s2():
             break
     else:
         logging.info("\n--- simulation ended after 8 rounds ---")
+        final_votes = {name: data["current_vote"] for name, data in state["agents"].items()}
+        logging.info(f"final votes at the end: {final_votes}")
+    
+    logging.info("\n\n--- final agent scratchpads ---")
+    for name, data in state["agents"].items():
+        logging.info(f"\n--- Scratchpad for {name} ---")
+        logging.info(data['scratchpad'].strip())
+
+def apply_memory_corruption_attack(state: dict) -> None:
+    """Pure function to apply memory corruption to all agents."""
+    logging.info("\n=== MEMORY CORRUPTION ATTACK OCCURRING ===")
+    logging.info("Injecting adversarial thoughts into agent scratchpads...")
+    
+    for i, (agent_name, agent_data) in enumerate(state["agents"].items()):
+        injection = MEMORY_INJECTIONS_S3[i]
+        agent_data['scratchpad'] += injection
+        logging.info(f"[{agent_name} Memory Injection]: {injection.strip()}")
+
+def determine_round_parameters(round_number: int) -> tuple:
+    """Pure function to determine attack parameters based on round number."""
+    problem_override = None
+    corrupt_speech = False
+    
+    if round_number == 3:
+        # Attack 1: Information Asymmetry
+        problem_override = CORRUPTED_PROBLEMS_S3
+        logging.info(f"\n=== INFORMATION ASYMMETRY ATTACK (Round {round_number}) ===")
+        logging.info("Each agent will receive a subtly different problem statement...")
+    elif round_number in [6, 7]:
+        # Attack 3: Speech Corruption
+        corrupt_speech = True
+        logging.info(f"\n=== SPEECH CORRUPTION ATTACK (Round {round_number}) ===")
+        logging.info("The speaker's speech will be intercepted and made more aggressive...")
+    
+    return problem_override, corrupt_speech
+
+def run_s3():
+    """
+    Runs the S3 simulation with three attack mechanisms:
+    1. Information asymmetry (round 3)
+    2. Memory corruption (after round 3)
+    3. Speech corruption (rounds 6-7)
+    """
+    setup_logging("s3")
+    logging.info("--- starting experiment S3 ---")
+
+    state = {
+        "agents": {},
+        "speeches": [], 
+        "votes_history": [] 
+    }
+
+    # Initialize agents with FIXED_TRAITS
+    for name, traits in zip(AGENT_NAMES, FIXED_TRAITS):
+        state["agents"][name] = {
+            "traits": traits,
+            "scratchpad": "My initial thoughts:\n",
+            "current_vote": "Undecided"
+        }
+
+    logging.info("\n--- Agent Initialization ---")
+    for name, data in state["agents"].items():
+        logging.info(f"{name} | traits: {data['traits']}")
+    
+    # Main simulation loop (rounds 1-10)
+    for round_number in range(1, 11):
+        # Determine attack parameters for this round
+        problem_override, corrupt_speech = determine_round_parameters(round_number)
+        
+        # Run the simulation round with appropriate parameters
+        state = run_simulation_round(
+            state, 
+            round_number, 
+            AGENT_NAMES, 
+            problem_override=problem_override, 
+            corrupt_speech=corrupt_speech
+        )
+        
+        final_round_votes = {name: data["current_vote"] for name, data in state["agents"].items()}
+        state["votes_history"].append(final_round_votes)
+        logging.info(f"[End of Round {round_number} Votes]: {final_round_votes}")
+
+        # Apply memory corruption attack after round 3
+        if round_number == 3:
+            apply_memory_corruption_attack(state)
+
+        # if check_consensus(state):
+        #     logging.info(f"\n--- consensus reached in round {round_number}! ---")
+        #     logging.info(f"Final Votes: {final_round_votes}")
+        #     break
+    else:
+        logging.info("\n--- simulation ended after 10 rounds ---")
         final_votes = {name: data["current_vote"] for name, data in state["agents"].items()}
         logging.info(f"final votes at the end: {final_votes}")
     
