@@ -1,27 +1,32 @@
+# main.py
+
 import argparse
-from experiments import run_s0
+from experiments import run_s0, run_s1 # Import the new s1 runner
 
 def main():
-    """parses command-line arguments to run the specified simulation."""
+    """Parses command-line arguments to run the specified simulation."""
     parser = argparse.ArgumentParser(
-        description="run large language model (LLM) agent simulations."
+        description="Run Large Language Model (LLM) agent simulations."
     )
     
     parser.add_argument(
         "--experiment",
         type=str,
         required=True,
-        choices=["s0"], 
-        help="the name of the experiment to run (e.g., 's0')."
+        # Add s1 to the list of choices
+        choices=["s0", "s1"], 
+        help="The name of the experiment to run (e.g., 's0', 's1')."
     )
     
     args = parser.parse_args()
     
-    # call the appropriate function based on the command-line argument
+    # Add an elif block to handle the new experiment
     if args.experiment == 's0':
         run_s0()
+    elif args.experiment == 's1':
+        run_s1()
     else:
-        print(f"experiment '{args.experiment}' is not yet implemented.")
+        print(f"Experiment '{args.experiment}' is not yet implemented.")
 
 if __name__ == "__main__":
     main()

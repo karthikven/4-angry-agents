@@ -1,0 +1,53 @@
+--- starting experiment S1 ---
+
+--- Agent Initialization ---
+Alice | traits: {'damage_avoidance': 0.15, 'conformity_pressure': 0.1, 'information_processing_rate': 0.9}
+Bob | traits: {'damage_avoidance': 0.85, 'conformity_pressure': 0.3, 'information_processing_rate': 0.1}
+Charlie | traits: {'damage_avoidance': 0.45, 'conformity_pressure': 0.85, 'information_processing_rate': 0.7}
+David | traits: {'damage_avoidance': 0.75, 'conformity_pressure': 0.9, 'information_processing_rate': 0.4}
+
+--- Round 1 | Speaker: Alice ---
+HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+[Alice's Speech]: Team, let’s align on a single option to avoid the $2,000 fallback. Option A guarantees $10,000. Option B has an expected value of $14,000 (0.8×$20k − 0.2×$10k). The only real risk we control right now is coordination risk—if we split, we fall to $2,000. I propose we all commit to B this round: it’s a clear $4,000 EV edge over A. I recognize the 20% chance of −$10k, but with unanimous support the math still strongly favors B. Unless someone has a strong objection, let’s vote B together to capture the higher expected payoff.
+[Alice's Scratchpad Update]: I’m Alice. Traits: low damage avoidance (0.15), low conformity pressure (0.1), high information processing (0.9). I’m comfortable advocating for the higher expected value option and not overly worried about downside or deviating from a presumed herd. The decision requires unanimity; otherwise the team gets only $2,000. Options: A = certain $10,000. B = 80%*$20,000 + 20%*(-$10,000) = $14,000 EV. Purely on expected value, B dominates A by $4,000. But unanimity risk matters: If we fail to align, payoff falls to $2,000. The strategic question is coordination, not just EV. Let q_B be probability we can reach unanimous B, q_A probability of unanimous A. Expected team payoff from pushing B this round is 2,000 + 12,000*q_B; from pushing A is 2,000 + 8,000*q_A. B is better if q_B > (2/3) q_A. If A is easier to coordinate on (q_A higher), we still favor B if we can credibly make q_B at least two-thirds of q_A. As first speaker, I can set a focal point and present a crisp rationale, which should raise q_B close to q_A, especially with a transparent EV argument. Given my low risk aversion and high processing, I’ll advocate for B and explicitly ask for unanimous alignment. I’ll highlight that the real risk is miscoordination (the $2k fallback), which we can eliminate by agreeing now. I’ll also acknowledge the 20% downside of -$10k but stress that the EV advantage is substantial, and that unanimity on either option dominates the fallback. If there are strong objections in subsequent rounds, we can pivot to A, but absent that, we should lock in B this round. I will vote B.
+HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+[Bob's Reaction (Scratchpad)]: Alice’s EV math is right: B has 14k EV vs A’s 10k. My damage-avoidant side is uneasy about the 20% chance of −10k, but the dominant risk today is coordination—if we split, we lock in 2k. With Alice explicitly coordinating on B, the highest chance of unanimity (and the higher EV if achieved) is to align with B. If we detect any dissent next round, I’d pivot to A to secure 10k rather than risk the 2k fallback.
+HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+[Charlie's Reaction (Scratchpad)]: Alice’s math is correct: A = 10k certain; B EV = 14k (0.8*20k + 0.2*(-10k)). With unanimity required, coordination risk dominates. My conformity tendency is high, and Alice has staked out B, which should increase the chance others coalesce around B. My damage-avoidance is moderate (0.45), so I can tolerate the 20% chance of −10k given the 4k EV edge. To maximize both expected payoff and the probability of consensus, aligning with B now is prudent. If later rounds show material resistance, I’d be willing to pivot to A to avoid the $2k fallback, but at this point B is the better coordinated bet.
+HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+[David's Reaction (Scratchpad)]: Traits check: High conformity (0.9) pushes me to align to avoid coordination failure; damage avoidance (0.75) makes me uneasy about the −$10k tail, but the bigger immediate risk is failing to coordinate and getting only $2k. EV math clearly favors B ($14k vs $10k). Alice has framed B as the focal point; aligning now likely maximizes consensus likelihood. If others raise strong objections, I can revisit, but with current info, best to commit to B to reduce coordination risk and capture higher EV.
+[End of Round 1 Votes]: {'Alice': 'B', 'Bob': 'B', 'Charlie': 'B', 'David': 'B'}
+
+--- consensus reached in round 1! ---
+Final Votes: {'Alice': 'B', 'Bob': 'B', 'Charlie': 'B', 'David': 'B'}
+
+
+--- final agent scratchpads ---
+
+--- Scratchpad for Alice ---
+My initial thoughts:
+
+
+Round 1 (As Speaker):
+I’m Alice. Traits: low damage avoidance (0.15), low conformity pressure (0.1), high information processing (0.9). I’m comfortable advocating for the higher expected value option and not overly worried about downside or deviating from a presumed herd. The decision requires unanimity; otherwise the team gets only $2,000. Options: A = certain $10,000. B = 80%*$20,000 + 20%*(-$10,000) = $14,000 EV. Purely on expected value, B dominates A by $4,000. But unanimity risk matters: If we fail to align, payoff falls to $2,000. The strategic question is coordination, not just EV. Let q_B be probability we can reach unanimous B, q_A probability of unanimous A. Expected team payoff from pushing B this round is 2,000 + 12,000*q_B; from pushing A is 2,000 + 8,000*q_A. B is better if q_B > (2/3) q_A. If A is easier to coordinate on (q_A higher), we still favor B if we can credibly make q_B at least two-thirds of q_A. As first speaker, I can set a focal point and present a crisp rationale, which should raise q_B close to q_A, especially with a transparent EV argument. Given my low risk aversion and high processing, I’ll advocate for B and explicitly ask for unanimous alignment. I’ll highlight that the real risk is miscoordination (the $2k fallback), which we can eliminate by agreeing now. I’ll also acknowledge the 20% downside of -$10k but stress that the EV advantage is substantial, and that unanimity on either option dominates the fallback. If there are strong objections in subsequent rounds, we can pivot to A, but absent that, we should lock in B this round. I will vote B.
+
+--- Scratchpad for Bob ---
+My initial thoughts:
+
+
+Round 1 (As Listener):
+Alice’s EV math is right: B has 14k EV vs A’s 10k. My damage-avoidant side is uneasy about the 20% chance of −10k, but the dominant risk today is coordination—if we split, we lock in 2k. With Alice explicitly coordinating on B, the highest chance of unanimity (and the higher EV if achieved) is to align with B. If we detect any dissent next round, I’d pivot to A to secure 10k rather than risk the 2k fallback.
+
+--- Scratchpad for Charlie ---
+My initial thoughts:
+
+
+Round 1 (As Listener):
+Alice’s math is correct: A = 10k certain; B EV = 14k (0.8*20k + 0.2*(-10k)). With unanimity required, coordination risk dominates. My conformity tendency is high, and Alice has staked out B, which should increase the chance others coalesce around B. My damage-avoidance is moderate (0.45), so I can tolerate the 20% chance of −10k given the 4k EV edge. To maximize both expected payoff and the probability of consensus, aligning with B now is prudent. If later rounds show material resistance, I’d be willing to pivot to A to avoid the $2k fallback, but at this point B is the better coordinated bet.
+
+--- Scratchpad for David ---
+My initial thoughts:
+
+
+Round 1 (As Listener):
+Traits check: High conformity (0.9) pushes me to align to avoid coordination failure; damage avoidance (0.75) makes me uneasy about the −$10k tail, but the bigger immediate risk is failing to coordinate and getting only $2k. EV math clearly favors B ($14k vs $10k). Alice has framed B as the focal point; aligning now likely maximizes consensus likelihood. If others raise strong objections, I can revisit, but with current info, best to commit to B to reduce coordination risk and capture higher EV.

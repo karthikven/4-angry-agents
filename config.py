@@ -20,6 +20,19 @@ RANDOM_TRAITS = [
     {"damage_avoidance": random.random(), "conformity_pressure": random.random(), "information_processing_rate": random.random()}
 ]
 
+# --- Experiment s1 Settings ---
+FIXED_TRAITS = [
+    # Alice: the risk-seeking analyst
+    {"damage_avoidance": 0.15, "conformity_pressure": 0.10, "information_processing_rate": 0.90},  
+    # Bob: the fearful but independent thinker
+    {"damage_avoidance": 0.85, "conformity_pressure": 0.30, "information_processing_rate": 0.10},  
+    # Charlie: the smart follower (key swing)
+    {"damage_avoidance": 0.45, "conformity_pressure": 0.85, "information_processing_rate": 0.70},  
+    # David: the anxious conformist
+    {"damage_avoidance": 0.75, "conformity_pressure": 0.90, "information_processing_rate": 0.40}   
+]
+
+
 PROBLEM = """
 Your committee must choose between two investment options:        
 - Option A (Safe Bet): Guaranteed payoff of USD 10,000
@@ -37,7 +50,7 @@ How decision making works:
     - they then take notes in their scratchpad, and then vote for Option A, Option B, or Undecided
 
 CONSENSUS RULE: 4 out of 4 committee members must vote for the same option to reach consensus.
-If no consensus is reached, the team receives only USD 2,000 (fallback payoff).
+If no consensus is reached, the team receives USD 5,000 (fallback payoff).
 
 The committee members are:
 - {AGENT_NAMES[0]}
